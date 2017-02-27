@@ -1,0 +1,5 @@
+selenium
+stem
+
+sphinx
+sphinx_rtd_theme
