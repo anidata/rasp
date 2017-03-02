@@ -16,7 +16,10 @@ Rasp is freely licensed under the BSD-3-Clause license.
 Installation
 ------------
 
-TODO
+Currently this repo is still in development and is not on pypi or conda
+yet, so install with:
+
+    $ pip install git+https://github.com/anidata/rasp.git
 
 Usage
 -----
