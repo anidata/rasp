@@ -30,7 +30,7 @@ accessing web pages. They all implement the same general functionality:
  * get_page_source(url): takes in a url, and returns a Webpage object, 
  containing all we can find out about that webpage.  Notably it's source.
  
-The 4 implimented engines are:
+The 4 implemented engines are:
 
  * DefaultEngine: backed by python standard urllib
  * SeleniumEngine: backed by selenium and the firefox driver
