@@ -42,10 +42,11 @@ Testing
 -------
 
 Test coverage is admittedly pretty bad right now, so help out by writing
- tests for new code. To run the tests, use:
+ tests for new code. To run the tests, make sure that you've installed
+  the dev requirements, and use the command found in the bin directory
+  of your virtualenv:
 
-    $ nosetests --with-coverage
-    $ coverage html
+    $ nose2
 
 We are working on getting travis or a similar CI service running.
 

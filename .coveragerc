@@ -1,0 +1,7 @@
+[run]
+branch = False
+source = python
+
+[report]
+precision = 1
+ignore_errors = True
