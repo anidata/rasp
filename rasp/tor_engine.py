@@ -34,6 +34,16 @@ class TorEngine(DefaultEngine):
 
         super(TorEngine, self).__init__(data, headers)
 
+    def __copy__(self):
+        return TorEngine(
+            self.pw,
+            self.control,
+            self.signal,
+            self.proxy_handler,
+            self.data,
+            self.headers
+        )
+
     def send_signal(self):
         conn = stem.connection.connect(
             control_port=self.control,
@@ -61,12 +71,3 @@ class TorEngine(DefaultEngine):
             time.sleep(2)
             return None
 
-    def clone(self):
-        return TorEngine(
-            self.pw,
-            self.control,
-            self.signal,
-            self.proxy_handler,
-            self.data,
-            self.headers
-        )
