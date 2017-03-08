@@ -17,11 +17,7 @@ class Engine(object):
 class DefaultEngine(Engine):
     def __init__(self, data=None, headers=None):
         self.data = data
-
-        if headers is None:
-            self.headers = {'User-Agent': DEFAULT_USER_AGENT}
-        else:
-            self.headers = headers
+        self.headers = headers or {'User-Agent': DEFAULT_USER_AGENT}
 
     def __copy__(self):
         return DefaultEngine(self.data, self.headers)
