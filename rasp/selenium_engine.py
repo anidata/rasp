@@ -7,56 +7,24 @@ from rasp.errors import EngineError
 
 
 class BaseSeleniumEngine(Engine):
-    def __init__(self):
-        self.driver = None
-        return
+    def __init__(self, *args, **kwargs):
+        self.driver = selenium.webdriver.Firefox()
 
     def get_source(self):
         return str(self.driver.page_source)
 
     def cleanup(self):
         self.driver.quit()
-        return
-
-    def setup(self):
-        self.driver = selenium.webdriver.Firefox()
-        return
 
     def load_page(self, url):
         self.driver.get(url)
-        return
 
     def get_url(self):
         return self.driver.current_url
 
-    def clone(self):
-        return BaseSeleniumEngine()
-
 
 class SeleniumEngine(BaseSeleniumEngine):
-    def __init__(self):
-        super(SeleniumEngine, self).__init__()
-        super(SeleniumEngine, self).setup()
-        return
-
     def get_page_source(self, url):
-        if url:
-            super(SeleniumEngine, self).load_page(url)
-            return Webpage(
-                    super(SeleniumEngine, self).get_url(),
-                    super(SeleniumEngine, self).get_source()
-                    )
-        else:
-            return None
-
-    def cleanup(self):
-        super(SeleniumEngine, self).cleanup()
-        return
-
-    def clone(self):
-        return SeleniumEngine()
-
-
 class TimedWaitEngine(BaseSeleniumEngine):
     def __init__(self, delay, parent=None):
         super(TimedWaitEngine, self).__init__()
@@ -88,4 +56,8 @@ class TimedWaitEngine(BaseSeleniumEngine):
         return self.parent.get_source()
 
     def get_url(self):
-        return self.parent.get_url()
+        return self.parent.get_url()        if not url:
+            return EngineError('url needs to be specified')
+        self.load_page(url)
+        page = Webpage(self.get_url(), self.get_source())
+        return page
