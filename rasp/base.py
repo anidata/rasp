@@ -3,6 +3,7 @@ import urllib.error
 import urllib.request
 
 from rasp.constants import DEFAULT_USER_AGENT
+from rasp.errors import EngineError
 
 
 class Engine(object):
@@ -25,13 +26,14 @@ class DefaultEngine(Engine):
     def __copy__(self):
         return DefaultEngine(self.data, self.headers)
 
-    def get_page_source(self, url):
+    def get_page_source(self, url, data=None):
+        if not url:
+            return EngineError('url needs to be specified')
+        data = self.data or data
         try:
-            if url:
-                req = urllib.request.Request(url, self.data, self.headers)
-                return Webpage(url, str(urllib.request.urlopen(req).read()))
-            else:
-                return None
+            req = urllib.request.Request(url, data, self.headers)
+            source = str(urllib.request.urlopen(req).read())
+            return Webpage(url, source)
         except urllib.error.HTTPError as e:
             return
 
@@ -48,4 +50,4 @@ class Webpage(object):
         self.url = url
 
     def __repr__(self):
-        return "url: %s" % self.url
+        return "url: {}".format(self.url)
