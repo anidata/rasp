@@ -3,7 +3,6 @@
 
 # packages for the docs
 sphinx
-sphinx_rtd_theme
 
 # packages for testing and coverage
 nose2
