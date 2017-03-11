@@ -13,7 +13,7 @@ The 4 implemented engines are:
  * SeleniumEngine: backed by selenium and the firefox driver
  * TimedWaitEngine: also backed by selenium, but waits after issuing the
   request before storing the source
- * TorEngine: which is backed by the Tor browser
+ * TorEngine: which is backed by Tor
 
 .. autoclass:: rasp.base.DefaultEngine
     :members:
