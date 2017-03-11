@@ -50,6 +50,18 @@ Test coverage is admittedly pretty bad right now, so help out by writing
 
 We are working on getting travis or a similar CI service running.
 
+Documentation
+-------------
+
+We use sphinx to build docs, they are in the docs directory.  To add new
+documentation, look in docs/source, at the *.rst files. To build the docs:
+
+    >>>cd docs
+    >>>make clean
+    >>>make html
+    
+Will build new html in the docs/build directory.
+
 Easy Issues / Getting Started
 -----------------------------
 
