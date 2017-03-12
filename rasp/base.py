@@ -2,6 +2,7 @@ import urllib
 import urllib.error
 import urllib.request
 import time
+import datetime
 from rasp.constants import DEFAULT_USER_AGENT
 from rasp.errors import EngineError
 
@@ -49,7 +50,7 @@ class Webpage(object):
 
         self._url = url
         self._source = source
-        self._access_date = time.time()
+        self._access_timestamp = time.time()
 
     @property
     def source(self):
@@ -64,10 +65,20 @@ class Webpage(object):
         return self._url
 
     @property
-    def access_date(self):
+    def access_timestamp(self):
         """Date of access of the webpage data, as a unix timestamp in UTC
         """
-        return self._access_date
+        return self._access_timestamp
+
+    @property
+    def access_datetime(self):
+        """Date of access of the webpage data, as a datetime object
+        """
+        return datetime.datetime.utcfromtimestamp(self.access_timestamp)
+
+    @access_datetime.setter
+    def access_datetime(self, access_datetime):
+        self._access_timestamp = access_datetime.timestamp()
 
     def __repr__(self):
-        return "url: {} at {}".format(self.url, self.access_date)
+        return "url: {} at {}".format(self.url, self.access_datetime.strftime('%Y-%m-%d %H:%M:%S'))
