@@ -1,9 +1,6 @@
-import urllib
-import urllib.error
-import urllib.request
+import requests
 
 from rasp.constants import DEFAULT_USER_AGENT
-from rasp.errors import EngineError
 
 
 class Engine(object):
@@ -16,23 +13,27 @@ class Engine(object):
 
 
 class DefaultEngine(Engine):
-    def __init__(self, data=None, headers=None):
-        self.data = data
+    def __init__(self, headers=None):
+        self.session = self._session()
         self.headers = headers or {'User-Agent': DEFAULT_USER_AGENT}
+        self.session.headers.update(self.headers)
 
     def __copy__(self):
-        return DefaultEngine(self.data, self.headers)
+        return DefaultEngine(self.headers)
 
-    def get_page_source(self, url, data=None):
+    def _session(self, *args, **kwargs):
+        return requests.session(*args, **kwargs)
+
+    def get_page_source(self, url, params=None, headers=None):
         if not url:
-            return EngineError('url needs to be specified')
-        data = self.data or data
-        try:
-            req = urllib.request.Request(url, data, self.headers)
-            source = str(urllib.request.urlopen(req).read())
-            return Webpage(url, source)
-        except urllib.error.HTTPError as e:
+            raise ValueError('url needs to be specified')
+        headers = headers or self.headers
+        response = self.session.get(
+            url, params=params, headers=headers
+        )
+        if response.status_code is not requests.codes.ok:
             return
+        return Webpage(url, source=str(response.content))
 
 
 class Webpage(object):

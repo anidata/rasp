@@ -1,57 +1,63 @@
 import getpass
-import http.client
-import time
-import urllib
-import urllib.error
-import urllib.request
+import os
 
-import stem.connection
 from stem import Signal
+from stem.control import Controller
 
-from rasp.base import Webpage, DefaultEngine
+from rasp.base import DefaultEngine
 
 
 class TorEngine(DefaultEngine):
-    def __init__(self, pw=None, control=None, signal=Signal.NEWNYM, proxy_handler=None, data=None, headers=None):
-        super(TorEngine, self).__init__(data, headers)
+    def __init__(self,
+                 headers=None,
+                 address=None,
+                 port=None,
+                 control_port=None,
+                 control_password=None):
+        super(TorEngine, self).__init__(headers)
 
-        self.signal = signal
-        self.pw = pw or getpass.getpass("Tor password: ")
-        self.control = control or ("127.0.0.1", 9051)
+        self.address = (
+            address
+            or os.environ.get('RASP_TOR_ADDRESS')
+            or '127.0.0.1'
+        )
+        self.port = (
+            port
+            or os.environ.get('RASP_TOR_PORT')
+            or 9050
+        )
+        self.control_password = (
+            control_password
+            or os.environ.get('RASP_TOR_CONTROL_PASSWORD')
+            or getpass.getpass("Tor control password: ")
+        )
+        self.control_port = (
+            control_port
+            or os.environ.get('RASP_TOR_CONTROL_PORT')
+            or 9051
+        )
 
-        default_handler = urllib.request.ProxyHandler({"http": "127.0.0.1:8118"})
-        self.proxy_handler = proxy_handler or default_handler
-
-        proxy_opener = urllib.request.build_opener(self.proxy_handler)
-        urllib.request.install_opener(proxy_opener)
+        proxy_uri = 'socks5://{}:{}'.format(self.address, self.port)
+        proxies = {'http': proxy_uri, 'https': proxy_uri}
+        self.session.proxies.update(proxies)
 
     def __copy__(self):
         return TorEngine(
-            self.pw,
-            self.control,
-            self.signal,
-            self.proxy_handler,
             self.data,
-            self.headers
+            self.headers,
+            self.address,
+            self.port,
+            self.control_port,
+            self.control_password,
         )
 
-    def send_signal(self):
-        conn = stem.connection.connect(
-            control_port=self.control,
-            password=self.pw
-        )
-        conn.signal(self.signal)
-        conn.close()
+    def clean_circuits(self):
+        kwargs = {'address': self.address, 'port': self.control_port}
+        with Controller.from_port(**kwargs) as controller:
+            controller.authenticate(password=self.control_password)
+            controller.signal(Signal.NEWNYM)
 
-    def get_page_source(self, url):
-        try:
-            self.send_signal()
-            req = urllib.request.Request(url, self.data, self.headers)
-            res = urllib.request.urlopen(req)
-
-            try:
-                return Webpage(url, str(res.read()))
-            except http.client.IncompleteRead:
-                return
-        except urllib.error.HTTPError as e:
-            time.sleep(2)
+    def get_page_source(self, url, params=None, clean_circuits=True):
+        if clean_circuits:
+            self.clean_circuits()
+        return super(TorEngine, self).get_page_source(url)
