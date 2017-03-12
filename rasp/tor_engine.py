@@ -57,7 +57,8 @@ class TorEngine(DefaultEngine):
             controller.authenticate(password=self.control_password)
             controller.signal(Signal.NEWNYM)
 
-    def get_page_source(self, url, params=None, clean_circuits=True):
+    def get_page_source(self, url, params=None,
+                        headers=None, clean_circuits=True):
         if clean_circuits:
             self.clean_circuits()
-        return super(TorEngine, self).get_page_source(url)
+        return super(TorEngine, self).get_page_source(url, params=params, headers=headers)

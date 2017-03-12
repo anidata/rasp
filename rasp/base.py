@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import requests
 
 from rasp.constants import DEFAULT_USER_AGENT
@@ -27,7 +29,10 @@ class DefaultEngine(Engine):
     def get_page_source(self, url, params=None, headers=None):
         if not url:
             raise ValueError('url needs to be specified')
-        headers = headers or self.headers
+        if isinstance(headers, dict):
+            temp = headers
+            headers = deepcopy(self.headers)
+            headers.update(temp)
         response = self.session.get(
             url, params=params, headers=headers
         )
