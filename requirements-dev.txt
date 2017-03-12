@@ -1,5 +1,10 @@
-selenium
-stem
+# inherit the project requirements
+-r requirements.txt
 
+# packages for the docs
 sphinx
-sphinx_rtd_theme
+
+# packages for testing and coverage
+nose2
+cov-core
+coverage
