@@ -7,6 +7,6 @@ install:
   - "pip install -r requirements-dev.txt"
   - "pip install coveralls"
 script:
-  - nose2
+  - py.test
 after_success:
   - coveralls
