@@ -8,3 +8,5 @@ sphinx
 nose2
 cov-core
 coverage
+pytest
+betamax
