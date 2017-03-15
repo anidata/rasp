@@ -1,12 +1,9 @@
-
+import datetime
+import time
 from copy import deepcopy
 
 import requests
-import urllib
-import urllib.error
-import urllib.request
-import time
-import datetime
+
 from rasp.constants import DEFAULT_USER_AGENT
 
 
@@ -27,6 +24,7 @@ class DefaultEngine(Engine):
             requests are routed through.
         headers (dict): Base headers for all requests.
     """
+
     def __init__(self, headers=None):
         self.session = self._session()
         self.headers = headers or {'User-Agent': DEFAULT_USER_AGENT}

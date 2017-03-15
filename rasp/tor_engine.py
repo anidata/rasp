@@ -1,10 +1,12 @@
 import getpass
 import os
+from contextlib import contextmanager
 
 from stem import Signal
-from stem.control import Controller
+from stem.connection import connect
 
 from rasp.base import DefaultEngine
+from rasp.errors import EngineError
 
 
 class TorEngine(DefaultEngine):
@@ -33,6 +35,7 @@ class TorEngine(DefaultEngine):
             can also be set with the ``RASP_TOR_CONTROL_PORT``
             environment variable.
      """
+
     def __init__(self,
                  headers=None,
                  address=None,
@@ -76,19 +79,38 @@ class TorEngine(DefaultEngine):
             self.control_password,
         )
 
-    def clean_circuits(self):
+    @contextmanager
+    def refreshable_ip(self):
+        try:
+            self.open_controller()
+            yield
+        finally:
+            self.close_controller()
+
+    def open_controller(self):
+        info = (self.address, self.control_port)
+        self.controller = connect(
+            control_port=info,
+            password=self.control_password
+        )
+
+    def close_controller(self):
+        self.controller.close()
+
+    def refresh_ip(self):
         """Refreshes the mapping of nodes we connect through.
 
         When a new path from the user to the destination is required, this
         method refreshes the node path we use to connect. This gives us a new IP
         address with which the destination sees."""
-        kwargs = {'address': self.address, 'port': self.control_port}
-        with Controller.from_port(**kwargs) as controller:
-            controller.authenticate(password=self.control_password)
-            controller.signal(Signal.NEWNYM)
+        if not hasattr(self, 'controller'):
+            raise EngineError('Signal controller has not been activated'
+                              ', cannot refresh IP address')
+
+        self.controller.signal(Signal.NEWNYM)
 
     def get_page_source(self, url, params=None,
-                        headers=None, clean_circuits=True):
+                        headers=None, refresh_ip=False):
         """Fetches the specified url.
 
         Attributes:
@@ -97,13 +119,13 @@ class TorEngine(DefaultEngine):
                 x-www-form-urlencoded url parameters_.
             headers (dict, optional): Extra headers to be merged into
                 base headers for current Engine before requesting url.
-            clean_circuits (bool, optional): Determines whether or not
+            refresh_ip (bool, optional): Determines whether or not
                 we want to get a new IP with which to connect ``url``.
         Returns:
             ``rasp.base.Webpage`` if successful, ``None`` if not
 
         .. _parameters: http://docs.python-requests.org/en/master/user/quickstart/#passing-parameters-in-urls
         """
-        if clean_circuits:
-            self.clean_circuits()
+        if refresh_ip:
+            self.refresh_ip()
         return super(TorEngine, self).get_page_source(url, params=params, headers=headers)

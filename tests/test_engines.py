@@ -53,6 +53,6 @@ class TestTorEngine:
         with betamax.Betamax(self.session) as vcr:
             vcr.use_cassette('test_tor_pull_source_valid_url')
             url = 'http://www.google.com'
-            response = self.engine.get_page_source(url, clean_circuits=False)
+            response = self.engine.get_page_source(url)
             assert isinstance(response, Webpage)
             assert isinstance(response.source, str)
