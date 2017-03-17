@@ -1,7 +1,8 @@
 import selenium
 import selenium.webdriver
 
-from rasp.base import Engine, Webpage
+from rasp.webpage import Webpage
+from rasp.engines.base import Engine
 from rasp.errors import EngineError
 
 
