@@ -1,6 +1,8 @@
 Rasp
 ====
 
+[![Build Status](https://travis-ci.org/anidata/rasp.svg?branch=master)](https://travis-ci.org/anidata/rasp)
+
 Overview
 --------
 
