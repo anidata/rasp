@@ -14,7 +14,7 @@ with betamax.Betamax.configure() as config:
 
 class TestDefaultEngine:
     @patch('rasp.base.DefaultEngine._session')
-    def setUp(self, req_mock):
+    def setup(self, req_mock):
         session = requests.session()
         req_mock.return_value = session
         self.session = session
@@ -53,7 +53,7 @@ class TestDefaultEngine:
 
 class TestTorEngine:
     @patch('rasp.base.DefaultEngine._session')
-    def setUp(self, req_mock):
+    def setup(self, req_mock):
         session = requests.session()
         req_mock.return_value = session
         self.session = session
