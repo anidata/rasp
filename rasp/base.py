@@ -1,3 +1,4 @@
+from functools import partial
 import datetime
 import time
 from copy import deepcopy
@@ -44,6 +45,20 @@ class DefaultEngine(Engine):
             ``requests.Session``
         """
         return requests.session(*args, **kwargs)
+
+    def curry(self):
+        """
+        Curries the get_page_source method by creating a copy of the instance
+        with all the state baked in.
+
+        Note: This method exists to return a functional representation of the
+        class.
+
+        Returns:
+            get_page_source()
+        """
+        TmpEngine = deepcopy(self)
+        return TmpEngine.get_page_source
 
     def get_page_source(self, url, params=None, headers=None):
         """Fetches the specified url.

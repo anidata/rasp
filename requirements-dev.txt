@@ -5,6 +5,7 @@
 sphinx
 
 # packages for testing and coverage
+flask
 nose2
 cov-core
 coverage
