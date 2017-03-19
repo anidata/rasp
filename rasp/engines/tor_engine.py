@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from stem import Signal
 from stem.connection import connect
 
-from rasp.base import DefaultEngine
+from rasp import DefaultEngine
 from rasp.errors import EngineError
 
 

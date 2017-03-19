@@ -1,12 +1,13 @@
 import os
 from unittest.mock import patch
 
-import betamax
-import pytest
 import requests
 
-from rasp.base import DefaultEngine, Webpage
-from rasp.tor_engine import TorEngine
+import betamax
+import pytest
+from rasp.webpage import Webpage
+from rasp import DefaultEngine
+from rasp.engines.tor_engine import TorEngine
 
 with betamax.Betamax.configure() as config:
     current_dir = os.path.abspath(os.path.dirname(__file__))
