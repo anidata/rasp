@@ -4,7 +4,6 @@ from unittest.mock import patch
 import betamax
 import pytest
 import requests
-from flask import Flask
 
 from rasp.base import DefaultEngine, Webpage
 from rasp.tor_engine import TorEngine
