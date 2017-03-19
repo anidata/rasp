@@ -37,17 +37,16 @@ class TestDefaultEngine:
         Changes to the state of the Engine instance after currying shouldn't
         affect the parameters of the curried method
         """
-        self.engine.headers.update({'Content-Type': 'text/json'})
+        self.engine.headers.update({'X-Test': 'foo'})
         get_source = self.engine.curry()
-        self.engine.headers.update({'Content-Type': 'text/xml'})
-        page1 = get_source('http://127.0.0.1:5000/echo-headers/')
-        content_type = [x for x in page1 if x[0] == 'Content-Type'][0]
-        assert content_type == 'text/json'
+        self.engine.headers.update({'X-Test': 'bar'})
+        page = get_source('http://httpbin.org/headers')
+        assert '"X-Test": "foo"' in page.source
 
     def test_default_pull_source_not_found(self):
         with betamax.Betamax(self.session) as vcr:
             vcr.use_cassette('test_default_pull_source_not_found')
-            url = 'http://www.google.com/404'
+            url = 'http://google.com/404'
             response = self.engine.get_page_source(url)
             assert response is None
 

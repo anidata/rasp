@@ -75,9 +75,10 @@ class DefaultEngine(Engine):
         """
         if not url:
             raise ValueError('url needs to be specified')
-        if isinstance(headers, dict):
-            temp = headers
-            headers = deepcopy(self.headers)
+
+        temp = headers
+        headers = deepcopy(self.headers)
+        if isinstance(temp, dict):
             headers.update(temp)
         response = self.session.get(
             url, params=params, headers=headers
