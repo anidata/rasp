@@ -1,3 +1,4 @@
+from functools import partial
 import datetime
 import time
 from copy import deepcopy
