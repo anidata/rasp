@@ -47,7 +47,7 @@ class TestDefaultEngine:
     def test_default_pull_source_not_found(self):
         with betamax.Betamax(self.session) as vcr:
             vcr.use_cassette('test_default_pull_source_not_found')
-            url = 'http://www.google.com'
+            url = 'http://www.google.com/404'
             response = self.engine.get_page_source(url)
             assert response is None
 
