@@ -30,7 +30,7 @@ There are 4 types of engine supported by rasp, differing by how they are
 accessing web pages. They all implement the same general functionality:
  
  * get_page_source(url): takes in a url, and returns a Webpage object, 
- containing all we can find out about that webpage.  Notably it's source.
+ containing all we can find out about that webpage.  Notably its source.
  
 The 4 implemented engines are:
 
@@ -40,3 +40,9 @@ The 4 implemented engines are:
   request before storing the source
  * TorEngine: which is backed by Tor
 
+Testing
+-------
+To run the tests install the dev dependencies listed in requirements-dev.txt,
+start the test server by running 
+`python tests/tiny_server.py`, and run the test suite with
+`nose2`.
