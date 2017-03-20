@@ -20,13 +20,13 @@ class TestDefaultEngine:
         self.session = session
         self.engine = DefaultEngine()
 
-    def test_default_pull_source_empty_url(self):
+    def test_get_source_empty_url(self):
         with pytest.raises(ValueError):
             self.engine.get_page_source('')
 
-    def test_default_pull_source_valid_url(self):
+    def test_get_source_valid_url(self):
         with betamax.Betamax(self.session) as vcr:
-            vcr.use_cassette('test_default_pull_source_valid_url')
+            vcr.use_cassette('test_get_source_valid_url')
             url = 'http://www.google.com'
             response = self.engine.get_page_source(url)
             assert isinstance(response, Webpage)
@@ -43,12 +43,12 @@ class TestDefaultEngine:
         page = get_source('http://httpbin.org/headers')
         assert '"X-Test": "foo"' in page.source
 
-    def test_default_pull_source_not_found(self):
+    def test_webpage_correct_status(self):
         with betamax.Betamax(self.session) as vcr:
-            vcr.use_cassette('test_default_pull_source_not_found')
+            vcr.use_cassette('test_webpage_correct_status')
             url = 'http://google.com/404'
             response = self.engine.get_page_source(url)
-            assert response is None
+            assert response.response_code == 404
 
 
 class TestTorEngine:
@@ -59,9 +59,9 @@ class TestTorEngine:
         self.session = session
         self.engine = TorEngine(control_password='raspdefaulttorpass')
 
-    def test_tor_pull_source_valid_url(self):
+    def test_tor_get_source_valid_url(self):
         with betamax.Betamax(self.session) as vcr:
-            vcr.use_cassette('test_tor_pull_source_valid_url')
+            vcr.use_cassette('test_tor_get_source_valid_url')
             url = 'http://www.google.com'
             response = self.engine.get_page_source(url)
             assert isinstance(response, Webpage)

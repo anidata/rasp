@@ -66,7 +66,7 @@ class DefaultEngine(Engine):
             headers (dict, optional): Extra headers to be merged into
                 base headers for current Engine before requesting url.
         Returns:
-                    ``rasp.base.Webpage`` if successful, ``None`` if not
+            ``rasp.base.Webpage`` if successful
 
         .. _parameters: http://docs.python-requests.org/en/master/user/quickstart/#passing-parameters-in-urls
         """
@@ -80,26 +80,37 @@ class DefaultEngine(Engine):
         response = self.session.get(
             url, params=params, headers=merged_headers
         )
-        if response.status_code is not requests.codes.ok:
-            return
-        return Webpage(url, source=str(response.content))
+        return Webpage(
+            url,
+            source=response.text,
+            headers=response.headers,
+            response_code=response.status_code
+        )
 
 
 class Webpage(object):
-    def __init__(self, url=None, source=None):
+    def __init__(self, url=None, source=None, headers=None, response_code=None):
         """The Webpage object represents all we know about a single scraped page.
 
         The Webpage object is the key object constructed by an engine to represent what we know about a given webpage.
         It includes things like the page source, url, and date of access.
 
-        :param url: the url of the webpage you are representing
-        :param source: the source, as text of the webpage.
-        :return: Webpage
+        Attributes:
+            url (str): The url of the webpage you are representing
+            source (str): The source, as text of the webpage
+            headers (dict): The headers of the response
+            response_code (int): The `HTTP code`_ of the response
+        Returns:
+            ``rasp.base.Webpage``
+
+        .. _HTTP code: http://www.restapitutorial.com/httpstatuscodes.html
         """
 
         self._url = url
         self._source = source
         self._access_timestamp = time.time()
+        self.headers = headers
+        self.response_code = response_code
 
     @property
     def source(self):
