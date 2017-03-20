@@ -45,13 +45,10 @@ class DefaultEngine(Engine):
         """
         return requests.session(*args, **kwargs)
 
-    def curry(self):
+    def scraper_as_func(self):
         """
-        Curries the get_page_source method by creating a copy of the instance
+        Curries the get_page_source() method by creating a copy of the instance
         with all the state baked in.
-
-        Note: This method exists to return a functional representation of the
-        class.
 
         Returns:
             get_page_source()
@@ -81,7 +78,7 @@ class DefaultEngine(Engine):
             merged_headers.update(headers)
 
         response = self.session.get(
-            url, params=params, headers=headers
+            url, params=params, headers=merged_headers
         )
         if response.status_code is not requests.codes.ok:
             return
