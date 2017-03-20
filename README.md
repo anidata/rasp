@@ -42,7 +42,5 @@ The 4 implemented engines are:
 
 Testing
 -------
-To run the tests install the dev dependencies listed in requirements-dev.txt,
-start the test server by running 
-`python tests/tiny_server.py`, and run the test suite with
-`nose2`.
+To run the tests install the dev dependencies listed in requirements-dev.txt
+and run `pytest`
