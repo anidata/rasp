@@ -46,7 +46,7 @@ class DefaultEngine(Engine):
         return requests.session(*args, **kwargs)
 
     @staticmethod
-    def as_func(self, func_name):
+    def as_func(cls, func_name):
         """
         Curries the get_page_source() method by creating a copy of the instance
         with all the state baked in.
@@ -54,7 +54,7 @@ class DefaultEngine(Engine):
         Returns:
             get_page_source()
         """
-        TmpEngine = deepcopy(self)
+        TmpEngine = deepcopy(cls)
 
         method = None
         class_name = TmpEngine.__class__.__name__
