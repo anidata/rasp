@@ -46,12 +46,12 @@ class DefaultEngine(Engine):
         return requests.session(*args, **kwargs)
 
     @staticmethod
-    def as_func(cls, func_name):
+    def as_func(cls, method_name):
         """Curries the specified function with the current state of the Engine
 
         Attributes:
             cls (Engine): An Engine class instance
-            func_name (str): The name of the method to be curried
+            method_name (str): The name of the method to be curried
 
         Example:
             engine = DefaultEngine()
@@ -65,7 +65,7 @@ class DefaultEngine(Engine):
 
         class_name = TmpEngine.__class__.__name__
         try:
-            return getattr(TmpEngine, func_name)
+            return getattr(TmpEngine, method_name)
         except AttributeError:
             raise NotImplementedError('Class {} does not implement {}'.format(class_name, func_name))
 
