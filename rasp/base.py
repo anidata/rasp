@@ -45,6 +45,30 @@ class DefaultEngine(Engine):
         """
         return requests.session(*args, **kwargs)
 
+    @staticmethod
+    def as_func(cls, method_name):
+        """Curries the specified function with the current state of the Engine
+
+        Attributes:
+            cls (Engine): An Engine class instance
+            method_name (str): The name of the method to be curried
+
+        Example:
+            engine = DefaultEngine()
+            c = DefaultEngine.as_func(engine, 'get_page_source')
+            c('http://google.com')
+
+        Returns:
+            User-defined function, if successful
+        """
+        TmpEngine = deepcopy(cls)
+
+        class_name = TmpEngine.__class__.__name__
+        try:
+            return getattr(TmpEngine, method_name)
+        except AttributeError:
+            raise NotImplementedError('Class {} does not implement {}'.format(class_name, func_name))
+
     def get_page_source(self, url, params=None, headers=None):
         """Fetches the specified url.
 
@@ -61,12 +85,13 @@ class DefaultEngine(Engine):
         """
         if not url:
             raise ValueError('url needs to be specified')
+
+        merged_headers = deepcopy(self.headers)
         if isinstance(headers, dict):
-            temp = headers
-            headers = deepcopy(self.headers)
-            headers.update(temp)
+            merged_headers.update(headers)
+
         response = self.session.get(
-            url, params=params, headers=headers
+            url, params=params, headers=merged_headers
         )
         return Webpage(
             url,

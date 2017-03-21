@@ -12,7 +12,6 @@ with betamax.Betamax.configure() as config:
     current_dir = os.path.abspath(os.path.dirname(__file__))
     config.cassette_library_dir = os.path.join(current_dir, 'cassettes')
 
-
 class TestDefaultEngine:
     @patch('rasp.base.DefaultEngine._session')
     def setup(self, req_mock):
@@ -32,6 +31,17 @@ class TestDefaultEngine:
             response = self.engine.get_page_source(url)
             assert isinstance(response, Webpage)
             assert isinstance(response.source, str)
+
+    def test_curried_function(self):
+        """
+        Changes to the state of the Engine instance after currying shouldn't
+        affect the parameters of the curried method
+        """
+        self.engine.headers.update({'X-Test': 'foo'})
+        get_source = DefaultEngine.as_func(self.engine, 'get_page_source')
+        self.engine.headers.update({'X-Test': 'bar'})
+        page = get_source('http://httpbin.org/headers')
+        assert '"X-Test": "foo"' in page.source
 
     def test_webpage_correct_status(self):
         with betamax.Betamax(self.session) as vcr:
