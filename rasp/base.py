@@ -47,19 +47,25 @@ class DefaultEngine(Engine):
 
     @staticmethod
     def as_func(cls, func_name):
-        """
-        Curries the "func_name" method
+        """Curries the specified function
+
+        Attributes:
+            cls (DefaultEngine): An instance of the DefaultEngine class or subclass
+            func_name (str): The name of the method to be curried
+
+        Example:
+            engine = DefaultEngine()
+            c = DefaultEngine.as_func(engine, 'get_page_source')
+            c('http://google.com')
 
         Returns:
-            User-defined class method
+            User-defined class method, if successful
         """
         TmpEngine = deepcopy(cls)
 
-        method = None
         class_name = TmpEngine.__class__.__name__
         try:
-            method = getattr(TmpEngine, func_name)
-            return method
+            return getattr(TmpEngine, func_name)
         except AttributeError:
             raise NotImplementedError('Class {} does not implement {}'.format(class_name, func_name))
 
