@@ -47,10 +47,10 @@ class DefaultEngine(Engine):
 
     @staticmethod
     def as_func(cls, func_name):
-        """Curries the specified function
+        """Curries the specified function with the current state of the Engine
 
         Attributes:
-            cls (DefaultEngine): An instance of the DefaultEngine class or subclass
+            cls (Engine): An Engine class instance
             func_name (str): The name of the method to be curried
 
         Example:
@@ -59,7 +59,7 @@ class DefaultEngine(Engine):
             c('http://google.com')
 
         Returns:
-            User-defined class method, if successful
+            User-defined function, if successful
         """
         TmpEngine = deepcopy(cls)
 
