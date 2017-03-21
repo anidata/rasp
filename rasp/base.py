@@ -48,11 +48,10 @@ class DefaultEngine(Engine):
     @staticmethod
     def as_func(cls, func_name):
         """
-        Curries the get_page_source() method by creating a copy of the instance
-        with all the state baked in.
+        Curries the "func_name" method
 
         Returns:
-            get_page_source()
+            User-defined class method
         """
         TmpEngine = deepcopy(cls)
 
