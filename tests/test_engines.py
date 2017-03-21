@@ -38,7 +38,7 @@ class TestDefaultEngine:
         affect the parameters of the curried method
         """
         self.engine.headers.update({'X-Test': 'foo'})
-        get_source = self.engine.scraper_as_func()
+        get_source = DefaultEngine.as_func(self.engine, 'get_page_source')
         self.engine.headers.update({'X-Test': 'bar'})
         page = get_source('http://httpbin.org/headers')
         assert '"X-Test": "foo"' in page.source
