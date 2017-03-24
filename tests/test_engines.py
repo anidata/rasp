@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from unittest.mock import patch
 
 import betamax
@@ -6,11 +7,12 @@ import pytest
 import requests
 
 from rasp.base import DefaultEngine, Webpage
-from rasp.tor_engine import TorEngine
+from rasp.tor_engine import TorEngine, TorController
 
 with betamax.Betamax.configure() as config:
     current_dir = os.path.abspath(os.path.dirname(__file__))
     config.cassette_library_dir = os.path.join(current_dir, 'cassettes')
+
 
 class TestDefaultEngine:
     @patch('rasp.base.DefaultEngine._session')
@@ -57,7 +59,7 @@ class TestTorEngine:
         session = requests.session()
         req_mock.return_value = session
         self.session = session
-        self.engine = TorEngine(control_password='raspdefaulttorpass')
+        self.engine = TorEngine()
 
     def test_tor_get_source_valid_url(self):
         with betamax.Betamax(self.session) as vcr:
@@ -66,3 +68,21 @@ class TestTorEngine:
             response = self.engine.get_page_source(url)
             assert isinstance(response, Webpage)
             assert isinstance(response.source, str)
+
+    def test_call_limiter_before_limit(self):
+        lim_func = TorController.call_limited(2)
+        assert not lim_func()
+
+    def test_call_limiter_after_limit(self):
+        lim_func = TorController.call_limited(2)
+        lim_func()
+        assert lim_func()
+
+    def test_time_limiter_before_limit(self):
+        lim_func = TorController.time_limited(0.01)
+        assert not lim_func()
+
+    def test_time_limiter_after_limit(self):
+        lim_func = TorController.time_limited(0.01)
+        sleep(0.01)
+        assert lim_func()

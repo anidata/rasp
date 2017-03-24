@@ -67,9 +67,12 @@ class DefaultEngine(Engine):
         try:
             return getattr(TmpEngine, method_name)
         except AttributeError:
-            raise NotImplementedError('Class {} does not implement {}'.format(class_name, func_name))
+            raise NotImplementedError('Class {} does not implement {}'.format(class_name, method_name))
 
-    def get_page_source(self, url, params=None, headers=None):
+    def get_page_source(self, url,
+                        params=None,
+                        headers=None,
+                        pre_fetch_callback=None):
         """Fetches the specified url.
 
         Attributes:
@@ -85,6 +88,8 @@ class DefaultEngine(Engine):
         """
         if not url:
             raise ValueError('url needs to be specified')
+        if pre_fetch_callback:
+            pre_fetch_callback()
 
         merged_headers = deepcopy(self.headers)
         if isinstance(headers, dict):
