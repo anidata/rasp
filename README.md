@@ -34,10 +34,8 @@ accessing web pages. They all implement the same general functionality:
  
 The 4 implemented engines are:
 
- * DefaultEngine: backed by python standard urllib
+ * DefaultEngine: backed by [requests](http://docs.python-requests.org/en/master/)
  * SeleniumEngine: backed by selenium and the firefox driver
- * TimedWaitEngine: also backed by selenium, but waits after issuing the
-  request before storing the source
  * TorEngine: which is backed by Tor
 
 Testing

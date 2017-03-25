@@ -37,6 +37,9 @@ principles:
  and documentation are important.
  * The core object of interest is the Webpage, which should be intuitive,
  rich, and performant.
+ * When adding new functionality, make sure to add docstrings wherever 
+ appropriate.  We use the [Google style](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
+ docstrings.
 
 Testing
 -------
@@ -46,9 +49,7 @@ Test coverage is admittedly pretty bad right now, so help out by writing
   the dev requirements, and use the command found in the bin directory
   of your virtualenv:
 
-    $ nose2
-
-We are working on getting travis or a similar CI service running.
+    $ pytest
 
 Documentation
 -------------
@@ -60,7 +61,8 @@ documentation, look in docs/source, at the *.rst files. To build the docs:
     >>>make clean
     >>>make html
     
-Will build new html in the docs/build directory.
+Will build new html in the docs/build directory.  When adding a new rst
+file, make sure to add it to the ``index.rst`` file.
 
 Easy Issues / Getting Started
 -----------------------------

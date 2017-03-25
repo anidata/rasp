@@ -5,7 +5,6 @@
 sphinx
 
 # packages for testing and coverage
-nose2
 cov-core
 coverage
 pytest
