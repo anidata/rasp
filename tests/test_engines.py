@@ -1,12 +1,13 @@
-import os
 from time import sleep
-from unittest.mock import patch
 
 import betamax
+import os
 import pytest
 import requests
+from unittest.mock import patch
 
 from rasp.base import DefaultEngine, Webpage
+from rasp.errors import ControllerError
 from rasp.tor_engine import TorEngine, TorController
 
 with betamax.Betamax.configure() as config:
@@ -14,7 +15,7 @@ with betamax.Betamax.configure() as config:
     config.cassette_library_dir = os.path.join(current_dir, 'cassettes')
 
 
-class TestDefaultEngine:
+class TestDefaultEngine(object):
     @patch('rasp.base.DefaultEngine._session')
     def setup(self, req_mock):
         session = requests.session()
@@ -53,7 +54,7 @@ class TestDefaultEngine:
             assert response.response_code == 404
 
 
-class TestTorEngine:
+class TestTorEngine(object):
     @patch('rasp.base.DefaultEngine._session')
     def setup(self, req_mock):
         session = requests.session()
@@ -86,3 +87,22 @@ class TestTorEngine:
         lim_func = TorController.time_limited(0.01)
         sleep(0.01)
         assert lim_func()
+
+    def test_controller_connection_enforcement_fails(self):
+        ctrl = TorController(password='thang')
+        enforced = TorController._enforce_connection(TorController.signal)
+        with pytest.raises(ControllerError):
+            enforced(ctrl)
+
+    def test_controller_connection_enforcement(self):
+        ctrl = TorController(password='thang')
+
+        class ConnMock(object):
+            def is_newnym_available(self):
+                return True
+
+        ctrl.connection = ConnMock()
+        enforced = TorController._enforce_connection(
+            TorController.ready_to_signal
+        )
+        enforced(ctrl)

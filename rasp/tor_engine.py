@@ -2,7 +2,6 @@ import getpass
 import os
 from contextlib import contextmanager
 from datetime import datetime, timedelta
-
 from stem import Signal
 from stem.connection import connect
 
@@ -37,12 +36,12 @@ class TorController(object):
             or os.environ.get('RASP_TOR_ADDRESS')
             or '127.0.0.1'
         )
-        self.control_port = (
+        self.port = (
             port
             or os.environ.get('RASP_TOR_CONTROL_PORT')
             or 9051
         )
-        self.control_password = (
+        self.password = (
             password
             or os.environ.get('RASP_TOR_CONTROL_PASSWORD')
             or getpass.getpass("Tor control password: ")
@@ -53,7 +52,8 @@ class TorController(object):
         return TorController(
             address=self.address,
             port=self.port,
-            password=self.control_password
+            password=self.password,
+            signal_limiter=self.limiter
         )
 
     def _enforce_connection(method):
@@ -109,7 +109,7 @@ class TorController(object):
             self.signal()
 
     @contextmanager
-    def connection(self):
+    def connected(self):
         """Context manager to automatically handle closing the connection"""
         try:
             self.open()
@@ -185,9 +185,10 @@ class TorEngine(DefaultEngine):
 
     def __init__(self,
                  headers=None,
+                 pre_fetch_callback=None,
                  address=None,
                  port=None):
-        super(TorEngine, self).__init__(headers)
+        super(TorEngine, self).__init__(headers, pre_fetch_callback)
 
         self.address = (
             address
@@ -206,8 +207,8 @@ class TorEngine(DefaultEngine):
 
     def __copy__(self):
         return TorEngine(
-            self.data,
             self.headers,
+            self.callback,
             self.address,
             self.port
         )
