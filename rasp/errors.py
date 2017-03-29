@@ -4,3 +4,7 @@ class EngineError(Exception):
 
 class MasterError(Exception):
     pass
+
+
+class ControllerError(Exception):
+    pass

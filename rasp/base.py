@@ -25,10 +25,11 @@ class DefaultEngine(Engine):
         headers (dict): Base headers for all requests.
     """
 
-    def __init__(self, headers=None):
+    def __init__(self, headers=None, pre_fetch_callback=None):
         self.session = self._session()
         self.headers = headers or {'User-Agent': DEFAULT_USER_AGENT}
         self.session.headers.update(self.headers)
+        self.callback = pre_fetch_callback
 
     def __copy__(self):
         return DefaultEngine(self.headers)
@@ -67,9 +68,11 @@ class DefaultEngine(Engine):
         try:
             return getattr(TmpEngine, method_name)
         except AttributeError:
-            raise NotImplementedError('Class {} does not implement {}'.format(class_name, func_name))
+            raise NotImplementedError('Class {} does not implement {}'.format(class_name, method_name))
 
-    def get_page_source(self, url, params=None, headers=None):
+    def get_page_source(self, url,
+                        params=None,
+                        headers=None):
         """Fetches the specified url.
 
         Attributes:
@@ -85,6 +88,8 @@ class DefaultEngine(Engine):
         """
         if not url:
             raise ValueError('url needs to be specified')
+
+        if self.callback: self.callback()
 
         merged_headers = deepcopy(self.headers)
         if isinstance(headers, dict):
