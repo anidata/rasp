@@ -46,7 +46,11 @@ class TorController(object):
             or os.environ.get('RASP_TOR_CONTROL_PASSWORD')
             or getpass.getpass("Tor control password: ")
         )
-        self.limiter = signal_limiter
+
+        def default_limiter(): return True
+        self.limiter = (
+            signal_limiter or default_limiter
+        )
 
     def __copy__(self):
         return TorController(
