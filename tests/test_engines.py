@@ -6,9 +6,10 @@ import pytest
 import requests
 from unittest.mock import patch
 
-from rasp.base import DefaultEngine, Webpage
+from rasp.engines.base import DefaultEngine
+from rasp.webpage import Webpage
 from rasp.errors import ControllerError
-from rasp.tor_engine import TorEngine, TorController
+from rasp.engines.tor_engine import TorEngine, TorController
 
 with betamax.Betamax.configure() as config:
     current_dir = os.path.abspath(os.path.dirname(__file__))
@@ -16,7 +17,7 @@ with betamax.Betamax.configure() as config:
 
 
 class TestDefaultEngine(object):
-    @patch('rasp.base.DefaultEngine._session')
+    @patch('rasp.engines.base.DefaultEngine._session')
     def setup(self, req_mock):
         session = requests.session()
         req_mock.return_value = session
@@ -55,7 +56,7 @@ class TestDefaultEngine(object):
 
 
 class TestTorEngine(object):
-    @patch('rasp.base.DefaultEngine._session')
+    @patch('rasp.engines.base.DefaultEngine._session')
     def setup(self, req_mock):
         session = requests.session()
         req_mock.return_value = session

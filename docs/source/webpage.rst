@@ -1,5 +1,5 @@
 Webpage
 =======
 
-.. autoclass:: rasp.base.Webpage
+.. autoclass:: rasp.webpage.Webpage
     :members:

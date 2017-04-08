@@ -4,8 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from stem import Signal
 from stem.connection import connect
-
-from rasp.base import DefaultEngine
+from rasp.engines.base import DefaultEngine
 from rasp.errors import ControllerError
 
 

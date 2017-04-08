@@ -15,11 +15,11 @@ The 4 implemented engines are:
   request before storing the source
  * TorEngine: which is backed by Tor
 
-.. autoclass:: rasp.base.DefaultEngine
+.. autoclass:: rasp.engines.base.DefaultEngine
     :members:
 
-.. autoclass:: rasp.selenium_engine.SeleniumEngine
+.. autoclass:: rasp.engines.selenium_engine.SeleniumEngine
     :members:
 
-.. autoclass:: rasp.tor_engine.TorEngine
+.. autoclass:: rasp.engines.tor_engine.TorEngine
     :members:

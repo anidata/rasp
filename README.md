@@ -37,6 +37,14 @@ The 4 implemented engines are:
  * DefaultEngine: backed by [requests](http://docs.python-requests.org/en/master/)
  * SeleniumEngine: backed by selenium and the firefox driver
  * TorEngine: which is backed by Tor
+ 
+Engines can be used directly, or passed to a crawler, along with a collection
+of URLs and a callback to handle resultant Webpage objects. The crawler
+will handle the execution.
+
+Currently there is only one crawler implimented:
+
+ * DefaultBoundedCrawler: a single-threaded python iteration.
 
 Testing
 -------
